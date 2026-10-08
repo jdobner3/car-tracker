@@ -1,0 +1,14 @@
+{
+  "name": "car-tracker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "migrate:local": "npx -y wrangler@4 d1 migrations apply car-tracker --local --persist-to \"%LOCALAPPDATA%/car-tracker-dev\"",
+    "dev": "npx -y wrangler@4 dev --ip 0.0.0.0 --port 8787 --persist-to \"%LOCALAPPDATA%/car-tracker-dev\"",
+    "migrate:remote": "npx -y wrangler@4 d1 migrations apply car-tracker --remote",
+    "deploy": "npx -y wrangler@4 deploy"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.132.0"
+  }
+}

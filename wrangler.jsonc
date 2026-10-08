@@ -1,0 +1,51 @@
+{
+  // Car maintenance tracker: one Worker serving the UI (static assets) and the API.
+  "$schema": "https://unpkg.com/wrangler/config-schema.json",
+  "name": "car-tracker",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // Daily at 8 AM Central (13:00 UTC; 7 AM in winter): recall check (weekly) + reminder emails.
+  "triggers": { "crons": ["0 13 * * *"] },
+
+  // Only reachable through the custom domain, which sits behind Cloudflare Access.
+  // The workers.dev URL would bypass Access, so it stays off.
+  "workers_dev": false,
+  "preview_urls": false,
+
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "car-tracker",
+      // Replaced with the real id after `wrangler d1 create car-tracker` (see README).
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+
+  "r2_buckets": [
+    { "binding": "FILES", "bucket_name": "car-tracker-files" }
+  ],
+
+  // Reminder emails go out through Cloudflare Email Routing on the cars.justdob.com subdomain
+  // (justdob.com's own mail stays on Microsoft 365). Recipients must be verified in Email Routing.
+  "send_email": [{ "name": "MAILER" }],
+
+  "vars": {
+    // Filled in when the Cloudflare Access app is created (see README).
+    // While empty, the API only answers on localhost.
+    "ACCESS_TEAM_DOMAIN": "",
+    "ACCESS_AUD": "",
+    "MAIL_FROM": "Garage <garage@cars.justdob.com>",
+    "APP_URL": "https://cars.justdob.com"
+  }
+  // Secret (not here): ANTHROPIC_API_KEY for receipt reading. `wrangler secret put ANTHROPIC_API_KEY`.
+}

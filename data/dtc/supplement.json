@@ -1,0 +1,21 @@
+{
+  "_note": "Standard SAE J2012 generic codes missing from the fabiovila list: hybrid (P0Axx) and network (U0xxx). Hand-curated; keep to well-established generic definitions only.",
+  "codes": [
+    ["P0A0D", "High Voltage System Interlock Circuit High"],
+    ["P0A0F", "Engine Failed to Start"],
+    ["P0A7F", "Hybrid/EV Battery Pack Deterioration"],
+    ["P0A80", "Replace Hybrid/EV Battery Pack"],
+    ["P0A93", "Inverter A Cooling System Performance"],
+    ["P0A94", "DC/DC Converter Performance"],
+    ["P0AA6", "Hybrid/EV Battery Voltage System Isolation Fault"],
+    ["U0001", "High Speed CAN Communication Bus"],
+    ["U0073", "Control Module Communication Bus A Off"],
+    ["U0100", "Lost Communication With ECM/PCM A"],
+    ["U0101", "Lost Communication With TCM"],
+    ["U0121", "Lost Communication With Anti-Lock Brake System (ABS) Control Module"],
+    ["U0140", "Lost Communication With Body Control Module"],
+    ["U0151", "Lost Communication With Restraints Control Module"],
+    ["U0155", "Lost Communication With Instrument Panel Cluster (IPC) Control Module"],
+    ["U0293", "Lost Communication With Hybrid Powertrain Control Module"]
+  ]
+}

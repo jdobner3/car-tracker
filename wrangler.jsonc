@@ -43,8 +43,8 @@
   "vars": {
     // Filled in when the Cloudflare Access app is created (see README).
     // While empty, the API only answers on localhost.
-    "ACCESS_TEAM_DOMAIN": "",
-    "ACCESS_AUD": "",
+    "ACCESS_TEAM_DOMAIN": "blue-butterfly-5547.cloudflareaccess.com",
+    "ACCESS_AUD": "091ccd1bf556ed49486f1aa811b94e0d94591a3ccab74010d9d038c7dc24cd83",
     "MAIL_FROM": "Garage <garage@cars.justdob.com>",
     "APP_URL": "https://cars.justdob.com"
   }

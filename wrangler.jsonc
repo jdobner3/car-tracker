@@ -26,7 +26,7 @@
       "binding": "DB",
       "database_name": "car-tracker",
       // Replaced with the real id after `wrangler d1 create car-tracker` (see README).
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "8da34d44-7693-4d5e-8f68-705478cdbff8",
       "migrations_dir": "migrations"
     }
   ],

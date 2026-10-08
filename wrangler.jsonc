@@ -36,17 +36,17 @@
     { "binding": "FILES", "bucket_name": "car-tracker-files" }
   ],
 
-  // Reminder emails go out through Cloudflare Email Routing on the cars.justdob.com subdomain
-  // (justdob.com's own mail stays on Microsoft 365). Recipients must be verified in Email Routing.
-  "send_email": [{ "name": "MAILER" }],
-
   "vars": {
     // Filled in when the Cloudflare Access app is created (see README).
     // While empty, the API only answers on localhost.
     "ACCESS_TEAM_DOMAIN": "blue-butterfly-5547.cloudflareaccess.com",
     "ACCESS_AUD": "091ccd1bf556ed49486f1aa811b94e0d94591a3ccab74010d9d038c7dc24cd83",
+    // Reminder emails go out through Resend from this address (cars.justdob.com is verified in Resend;
+    // justdob.com's own mail stays on Microsoft 365).
     "MAIL_FROM": "Garage <garage@cars.justdob.com>",
     "APP_URL": "https://cars.justdob.com"
   }
-  // Secret (not here): ANTHROPIC_API_KEY for receipt reading. `wrangler secret put ANTHROPIC_API_KEY`.
+  // Secrets (not here; `wrangler secret put <NAME>`):
+  //   ANTHROPIC_API_KEY  receipt reading
+  //   RESEND_API_KEY     reminder emails (sending-only key)
 }

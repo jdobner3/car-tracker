@@ -1,7 +1,6 @@
 // Daily job: check recalls (weekly), work out what's newly due, and email each car's people.
 // Every event gets a key in the `notices` table once emailed, so nothing is sent twice.
 
-import { EmailMessage } from 'cloudflare:email';
 import {
   mileage, itemStatus, reminderStatus, dueText, leftText, fmtDate, fmtMiles, num, daysBetween,
 } from '../public/lib/maint.js';
@@ -118,7 +117,7 @@ function shorten(s, n) {
 // ---------------------------------------------------------------- email
 
 export function emailReady(env) {
-  return !!(env.MAILER && env.MAIL_FROM);
+  return !!(env.RESEND_API_KEY && env.MAIL_FROM);
 }
 
 export function composeDigest(env, vehicle, events) {
@@ -145,44 +144,18 @@ export function composeDigest(env, vehicle, events) {
   return { subject, text, html };
 }
 
+// Sent through Resend (https://resend.com/docs/api-reference/emails/send-email).
+// The sending domain cars.justdob.com is verified there; justdob.com's own mail (Microsoft 365) is untouched.
 export async function sendEmail(env, to, { subject, text, html }) {
-  const from = env.MAIL_FROM;
-  const fromAddr = /<([^>]+)>/.exec(from)?.[1] || from;
-  const raw = buildMime({ from, to, subject, text, html, domain: fromAddr.split('@')[1] });
-  await env.MAILER.send(new EmailMessage(fromAddr, to, raw));
-}
-
-function buildMime({ from, to, subject, text, html, domain }) {
-  const boundary = `b_${crypto.randomUUID()}`;
-  const b64 = (s) => {
-    const bytes = new TextEncoder().encode(s);
-    let bin = '';
-    for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
-    return btoa(bin).replace(/.{1,76}/g, '$&\r\n');
-  };
-  const encSubject = `=?UTF-8?B?${b64(subject).replace(/\r\n/g, '')}?=`;
-  return [
-    `From: ${from}`,
-    `To: ${to}`,
-    `Subject: ${encSubject}`,
-    `Date: ${new Date().toUTCString()}`,
-    `Message-ID: <${crypto.randomUUID()}@${domain}>`,
-    'MIME-Version: 1.0',
-    `Content-Type: multipart/alternative; boundary="${boundary}"`,
-    '',
-    `--${boundary}`,
-    'Content-Type: text/plain; charset=UTF-8',
-    'Content-Transfer-Encoding: base64',
-    '',
-    b64(text),
-    `--${boundary}`,
-    'Content-Type: text/html; charset=UTF-8',
-    'Content-Transfer-Encoding: base64',
-    '',
-    b64(html),
-    `--${boundary}--`,
-    '',
-  ].join('\r\n');
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ from: env.MAIL_FROM, to: [to], subject, text, html }),
+  });
+  if (!res.ok) {
+    const detail = await res.json().catch(() => ({}));
+    throw new Error(`Resend ${res.status}: ${detail.message || detail.name || 'send failed'}`);
+  }
 }
 
 // ---------------------------------------------------------------- the daily run

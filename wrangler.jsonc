@@ -13,6 +13,7 @@
   // The workers.dev URL would bypass Access, so it stays off.
   "workers_dev": false,
   "preview_urls": false,
+  "routes": [{ "pattern": "cars.justdob.com", "custom_domain": true }],
 
   "assets": {
     "directory": "./public",

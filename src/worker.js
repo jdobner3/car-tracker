@@ -1,6 +1,6 @@
 // Car maintenance tracker API.
 // Static UI comes from ./public (Workers Static Assets); everything under /api/* lands here.
-// Data: D1 (env.DB). Receipts and manuals: R2 (env.FILES). Email: Cloudflare Email Routing (env.MAILER).
+// Data: D1 (env.DB). Receipts and manuals: R2 (env.FILES). Email: Resend (secret RESEND_API_KEY).
 // Login: Cloudflare Access in front of the site; this Worker re-checks the Access JWT on every API call.
 // A daily cron (wrangler.jsonc "triggers") checks recalls and sends reminder emails.
 

@@ -621,10 +621,19 @@ function renderCar() {
       $('#pv-close', body).addEventListener('click', closeSheet);
     } catch (err) { toast(err.message, true); }
   });
+  // Send test saves whatever is typed first, so nobody has to remember to press Save.
   $('#notify-test')?.addEventListener('click', async (e) => {
-    await busy(e.currentTarget, async () => {
+    const btn = e.currentTarget;
+    await busy(btn, async () => {
+      const emails = $('#notify-form').elements.notify_emails.value.trim();
+      if (!emails) throw new Error('Type an email address first');
+      if (emails !== (v.notify_emails ?? '')) {
+        await api(`/api/vehicles/${v.id}`, { method: 'PUT', json: { notify_emails: emails } });
+        v.notify_emails = emails;
+      }
+      btn.textContent = 'Sending…';
       const r = await api(`/api/vehicles/${v.id}/notify/test`, { method: 'POST' });
-      toast(`Test sent to ${r.sent.join(', ')}`);
+      toast(`Saved, and a test was sent to ${r.sent.join(', ')}`);
     });
   });
   api('/api/me').then((me) => {
